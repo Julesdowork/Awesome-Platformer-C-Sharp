@@ -6,6 +6,9 @@ using UnityEngine;
 public class PlayerCollisionDetection : MonoBehaviour
 {
     public event Action<int> OnPlayerGrabCoin;
+    public event Action OnPlayerWin;
+
+    [SerializeField] GameObject winEffect;
 
     Player player;
 
@@ -22,6 +25,15 @@ public class PlayerCollisionDetection : MonoBehaviour
             player.AddCoin(1);
             OnPlayerGrabCoin?.Invoke(player.coinAmount);
             // Play coin sound
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Star"))
+        {
+            Destroy(other.gameObject);
+            player.gameObject.SetActive(false);
+            GameManager.instance.AddToTotalCoins(player.coinAmount);
+            OnPlayerWin?.Invoke();
+            Instantiate(winEffect, player.transform.position, Quaternion.identity);
+            // Play star sound
         }
     }
 }

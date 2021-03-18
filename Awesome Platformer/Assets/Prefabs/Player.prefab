@@ -215,3 +215,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49767ba0308a51749a76bda593078db8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winEffect: {fileID: 8631893858884757292, guid: c61efb2bbdd142042ae991c25769b8a8, type: 3}
