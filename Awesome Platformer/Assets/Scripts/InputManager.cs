@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
     public static event Action OnJump;
 
     public float horizontal;
+    public float lastMoveHorizontal;
 
     bool useKeyboardInput = true;
 

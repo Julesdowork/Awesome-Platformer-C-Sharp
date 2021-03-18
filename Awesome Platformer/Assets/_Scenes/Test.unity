@@ -563,6 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontal: 0
+  lastMoveHorizontal: 0
 --- !u!4 &1630161287
 Transform:
   m_ObjectHideFlags: 0

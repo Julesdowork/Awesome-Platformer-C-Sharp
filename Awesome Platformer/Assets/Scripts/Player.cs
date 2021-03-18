@@ -13,11 +13,15 @@ public class Player : MonoBehaviour
     InputManager inputManager;
     Rigidbody2D rb;
     BoxCollider2D boxCollider;
+    Animator animator;
+    SpriteRenderer spriteRenderer;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         inputManager = GameObject.FindObjectOfType<InputManager>();
     }
@@ -31,6 +35,15 @@ public class Player : MonoBehaviour
     void Update()
     {
         rb.velocity = new Vector2(inputManager.horizontal * speed, rb.velocity.y);
+
+        animator.SetBool("isWalking", inputManager.horizontal != 0);
+
+        if (inputManager.horizontal != 0)
+            inputManager.lastMoveHorizontal = inputManager.horizontal;
+
+        animator.SetBool("isJumping", !IsGrounded());
+
+        spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
     }
 
     private void Jump()
