@@ -878,6 +878,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7896042076158691073, guid: d33c7f49eca91aa4a81c253444f545df, type: 3}
+      propertyPath: deathEffect
+      value: 
+      objectReference: {fileID: 8566200539656640973, guid: 978109469af636b49a997d732b046165, type: 3}
     - target: {fileID: 7896042076158691074, guid: d33c7f49eca91aa4a81c253444f545df, type: 3}
       propertyPath: m_RootOrder
       value: 2

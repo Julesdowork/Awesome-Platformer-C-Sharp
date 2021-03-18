@@ -1,14 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public event Action OnPlayerDie;
+
     [SerializeField] float speed = 12f;
     [SerializeField] float jumpSpeed = 25f;
     [SerializeField] bool canDoubleJump = true;
 
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] GameObject deathEffect;
 
     InputManager inputManager;
     Rigidbody2D rb;
@@ -44,6 +48,13 @@ public class Player : MonoBehaviour
         animator.SetBool("isJumping", !IsGrounded());
 
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
+
+        if (rb.velocity.y < -100)
+        {
+            gameObject.SetActive(false);
+            OnPlayerDie?.Invoke();
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
+        }
     }
 
     private void Jump()
