@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     [SerializeField] GameObject deathEffect;
 
+    public int coinAmount { get; private set; }
+
     InputManager inputManager;
     Rigidbody2D rb;
     BoxCollider2D boxCollider;
@@ -79,5 +81,10 @@ public class Player : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(originPos, boxCollider.size, 0, Vector2.down, 0.2f, groundLayer);
 
         return hit.collider != null;
+    }
+
+    public void AddCoin(int amount)
+    {
+        coinAmount += amount;
     }
 }
