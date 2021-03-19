@@ -6,6 +6,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public event Action OnPlayerDie;
+    public event Action<int> OnPlayerGrabCoin;
+    public event Action OnPlayerWin;
 
     [SerializeField] float speed = 12f;
     [SerializeField] float jumpSpeed = 25f;
@@ -13,6 +15,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] GameObject deathEffect;
+    [SerializeField] GameObject winEffect;
 
     public int coinAmount { get; private set; }
 
@@ -53,9 +56,36 @@ public class Player : MonoBehaviour
 
         if (rb.velocity.y < -100)
         {
+            Die();
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Hazards"))
+        {
             gameObject.SetActive(false);
-            OnPlayerDie?.Invoke();
-            Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Die();
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Coin"))
+        {
+            Destroy(other.gameObject);
+            AddCoin(1);
+            OnPlayerGrabCoin?.Invoke(coinAmount);
+            // Play coin sound
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Star"))
+        {
+            Destroy(other.gameObject);
+            gameObject.SetActive(false);
+            GameManager.instance.AddToTotalCoins(coinAmount);
+            OnPlayerWin?.Invoke();
+            Instantiate(winEffect, transform.position, Quaternion.identity);
+            // Play star sound
         }
     }
 
@@ -83,8 +113,15 @@ public class Player : MonoBehaviour
         return hit.collider != null;
     }
 
-    public void AddCoin(int amount)
+    private void AddCoin(int amount)
     {
         coinAmount += amount;
+    }
+
+    private void Die()
+    {
+        gameObject.SetActive(false);
+        OnPlayerDie?.Invoke();
+        Instantiate(deathEffect, transform.position, Quaternion.identity);
     }
 }
