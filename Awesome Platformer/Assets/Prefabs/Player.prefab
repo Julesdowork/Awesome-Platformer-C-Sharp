@@ -95,7 +95,6 @@ GameObject:
   - component: {fileID: 7896042076158691072}
   - component: {fileID: 7896042076158691073}
   - component: {fileID: 875969832}
-  - component: {fileID: 4296814760873677522}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -184,6 +183,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   deathEffect: {fileID: 8566200539656640973, guid: 978109469af636b49a997d732b046165, type: 3}
+  winEffect: {fileID: 8631893858884757292, guid: c61efb2bbdd142042ae991c25769b8a8, type: 3}
 --- !u!95 &875969832
 Animator:
   serializedVersion: 3
@@ -203,16 +203,3 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4296814760873677522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7896042076158691078}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49767ba0308a51749a76bda593078db8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  winEffect: {fileID: 8631893858884757292, guid: c61efb2bbdd142042ae991c25769b8a8, type: 3}
