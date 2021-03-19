@@ -37,7 +37,12 @@ public class Player : MonoBehaviour
 
     void OnEnable()
     {
-        InputManager.OnJump += Jump;
+        inputManager.OnJump += Jump;
+    }
+
+    void OnDisable()
+    {
+        inputManager.OnJump -= Jump;
     }
 
     // Update is called once per frame
