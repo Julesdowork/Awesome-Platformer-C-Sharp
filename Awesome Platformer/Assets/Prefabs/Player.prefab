@@ -126,7 +126,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 7896042076158691078}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: e9cccda8181267f409ca6001d0145feb, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -187,6 +187,10 @@ MonoBehaviour:
     m_Bits: 1024
   deathEffect: {fileID: 8566200539656640973, guid: 978109469af636b49a997d732b046165, type: 3}
   winEffect: {fileID: 8631893858884757292, guid: c61efb2bbdd142042ae991c25769b8a8, type: 3}
+  jumpSound: {fileID: 8300000, guid: f7c36d3f94c983f44a60425e2272da55, type: 3}
+  coinSound: {fileID: 8300000, guid: 9e2e3bfa0b1c2a34f83910a733ad23f3, type: 3}
+  starSound: {fileID: 8300000, guid: affbf3a69b07671469a35d825ca2ef20, type: 3}
+  loseSound: {fileID: 8300000, guid: 3f2ba3ea13d42af46a7d57a0a63988ee, type: 3}
 --- !u!95 &875969832
 Animator:
   serializedVersion: 3

@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField] List<GameObject> levelGameObjectList;
+    [SerializeField] List<Sprite> levelBackgroundList;
+    [SerializeField] SpriteRenderer background;
 
     LevelManager levelManager;
 
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
             level.SetActive(false);
 
         levelGameObjectList[GlobalVariables.currentLevel].SetActive(true);
+        background.sprite = levelBackgroundList[GlobalVariables.currentLevel];
     }
 
     public void AddToTotalCoins(int amount)
