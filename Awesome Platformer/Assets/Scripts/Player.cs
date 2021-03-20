@@ -14,10 +14,13 @@ public class Player : MonoBehaviour
     [SerializeField] bool canDoubleJump = true;
 
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask movingPlatformLayer;
     [SerializeField] GameObject deathEffect;
     [SerializeField] GameObject winEffect;
 
     public int coinAmount { get; private set; }
+
+    Collider2D movingPlatform;
 
     InputManager inputManager;
     Rigidbody2D rb;
@@ -48,6 +51,17 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.parent == null && IsOnTopOfMovingPlatform())
+        {
+            transform.SetParent(movingPlatform.transform);
+            rb.interpolation = RigidbodyInterpolation2D.None;
+        }
+        else if (transform.parent != null && !IsOnTopOfMovingPlatform())
+        {
+            transform.SetParent(null);
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
+
         rb.velocity = new Vector2(inputManager.horizontal * speed, rb.velocity.y);
 
         animator.SetBool("isWalking", inputManager.horizontal != 0);
@@ -60,9 +74,7 @@ public class Player : MonoBehaviour
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
 
         if (rb.velocity.y < -100)
-        {
             Die();
-        }
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -128,5 +140,22 @@ public class Player : MonoBehaviour
         gameObject.SetActive(false);
         OnPlayerDie?.Invoke();
         Instantiate(deathEffect, transform.position, Quaternion.identity);
+    }
+
+    private bool IsOnTopOfMovingPlatform()
+    {
+        Vector3 originPos = transform.position + (Vector3) boxCollider.offset;
+        RaycastHit2D hit = Physics2D.BoxCast(originPos, boxCollider.size, 0, Vector2.down, 0.1f, movingPlatformLayer);
+
+        if (hit.collider != null)
+        {
+            movingPlatform = hit.collider;
+            return true;
+        }
+        else
+        {
+            movingPlatform = null;
+            return false;
+        }
     }
 }
