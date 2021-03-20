@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public event Action OnPlayerDie;
-    public event Action<int> OnPlayerGrabCoin;
+    public event Action OnPlayerGrabCoin;
     public event Action OnPlayerWin;
 
     [SerializeField] float speed = 12f;
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
         {
             Destroy(other.gameObject);
             AddCoin(1);
-            OnPlayerGrabCoin?.Invoke(coinAmount);
+            OnPlayerGrabCoin?.Invoke();
             // Play coin sound
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Star"))
