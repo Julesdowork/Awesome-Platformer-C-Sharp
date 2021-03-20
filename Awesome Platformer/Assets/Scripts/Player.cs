@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
         {
             Destroy(other.gameObject);
             gameObject.SetActive(false);
-            GameManager.instance.AddToTotalCoins(coinAmount);
+            GlobalVariables.totalCoins += coinAmount;
             OnPlayerWin?.Invoke();
             Instantiate(winEffect, transform.position, Quaternion.identity);
             // Play star sound

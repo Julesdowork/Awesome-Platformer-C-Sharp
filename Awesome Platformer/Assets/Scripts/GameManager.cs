@@ -4,34 +4,37 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
 
-    public int totalCoins { get; private set; }
+    [SerializeField] List<GameObject> levelGameObjectList;
+
+    LevelManager levelManager;
 
     private void Awake()
     {
-        if (instance != null)
-            Destroy(gameObject);
-        else
-            instance = this;
-
-        DontDestroyOnLoad(gameObject);
+        levelManager = FindObjectOfType<LevelManager>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
+        foreach (GameObject level in levelGameObjectList)
+            level.SetActive(false);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        levelGameObjectList[GlobalVariables.currentLevel].SetActive(true);
     }
 
     public void AddToTotalCoins(int amount)
     {
-        totalCoins += amount;
+        GlobalVariables.totalCoins += amount;
+    }
+
+    public void LoadNextLevel()
+    {
+        GlobalVariables.currentLevel++;
+
+        if (GlobalVariables.currentLevel >= levelGameObjectList.Count)
+            levelManager.LoadWinScene();
+        else
+            levelManager.ReloadScene();
     }
 }
