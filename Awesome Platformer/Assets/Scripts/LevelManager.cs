@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
 
     public void LoadGameScene()
     {
+        GlobalVariables.currentLevel = 0;
+        GlobalVariables.totalCoins = 0;
         SceneManager.LoadScene("Game");
     }
 
