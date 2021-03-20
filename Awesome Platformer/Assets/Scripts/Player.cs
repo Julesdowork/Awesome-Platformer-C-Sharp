@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask movingPlatformLayer;
     [SerializeField] GameObject deathEffect;
     [SerializeField] GameObject winEffect;
+    [SerializeField] AudioClip jumpSound;
+    [SerializeField] AudioClip coinSound;
+    [SerializeField] AudioClip starSound;
+    [SerializeField] AudioClip loseSound;
 
     public int coinAmount { get; private set; }
 
@@ -64,12 +68,12 @@ public class Player : MonoBehaviour
 
         rb.velocity = new Vector2(inputManager.horizontal * speed, rb.velocity.y);
 
-        animator.SetBool("isWalking", inputManager.horizontal != 0);
+        animator.SetBool(TagManager.IsWalking, inputManager.horizontal != 0);
 
         if (inputManager.horizontal != 0)
             inputManager.lastMoveHorizontal = inputManager.horizontal;
 
-        animator.SetBool("isJumping", !IsGrounded());
+        animator.SetBool(TagManager.IsJumping, !IsGrounded());
 
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
 
@@ -79,7 +83,7 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Hazards"))
+        if (other.gameObject.layer == LayerMask.NameToLayer(TagManager.HazardsLayer))
         {
             gameObject.SetActive(false);
             Die();
@@ -88,21 +92,21 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Coin"))
+        if (other.gameObject.layer == LayerMask.NameToLayer(TagManager.CoinLayer))
         {
             Destroy(other.gameObject);
             AddCoin(1);
             OnPlayerGrabCoin?.Invoke();
-            // Play coin sound
+            SoundManager.instance.PlaySound(coinSound);
         }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Star"))
+        else if (other.gameObject.layer == LayerMask.NameToLayer(TagManager.StarLayer))
         {
             Destroy(other.gameObject);
             gameObject.SetActive(false);
             GlobalVariables.totalCoins += coinAmount;
             OnPlayerWin?.Invoke();
             Instantiate(winEffect, transform.position, Quaternion.identity);
-            // Play star sound
+            SoundManager.instance.PlaySound(starSound);
         }
     }
 
@@ -112,13 +116,13 @@ public class Player : MonoBehaviour
         {
             canDoubleJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-            // Play jump sound
+            SoundManager.instance.PlaySound(jumpSound);
         }
         else if (!IsGrounded() && canDoubleJump)
         {
             canDoubleJump = false;
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-            // Play jump sound
+            SoundManager.instance.PlaySound(jumpSound);
         }
     }
 
@@ -140,6 +144,7 @@ public class Player : MonoBehaviour
         gameObject.SetActive(false);
         OnPlayerDie?.Invoke();
         Instantiate(deathEffect, transform.position, Quaternion.identity);
+        SoundManager.instance.PlaySound(loseSound);
     }
 
     private bool IsOnTopOfMovingPlatform()

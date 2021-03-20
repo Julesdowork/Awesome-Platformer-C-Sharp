@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -12,21 +10,15 @@ public class InputManager : MonoBehaviour
 
     bool useKeyboardInput = true;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
         if (useKeyboardInput)
         {
-            horizontal = Input.GetAxisRaw("Horizontal");
+            horizontal = Input.GetAxisRaw(TagManager.Horizontal);
         }
 
-        if (Input.GetButtonDown("Jump") && useKeyboardInput)
+        if (Input.GetButtonDown(TagManager.Jump) && useKeyboardInput)
         {
             OnJump.Invoke();
         }
