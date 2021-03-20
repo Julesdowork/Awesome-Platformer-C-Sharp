@@ -3,12 +3,22 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
+
     public event Action OnJump;
 
     public float horizontal;
     public float lastMoveHorizontal;
 
-    bool useKeyboardInput = true;
+    [SerializeField] bool useKeyboardInput = true;
+
+    void Awake()
+    {
+        if (instance != null)
+            Destroy(gameObject);
+        else
+            instance = this;
+    }
 
     // Update is called once per frame
     void Update()
@@ -22,5 +32,15 @@ public class InputManager : MonoBehaviour
         {
             OnJump.Invoke();
         }
+    }
+
+    public void SetHorizontalMovement(float amount)
+    {
+        horizontal = amount;
+    }
+
+    public void TriggerJump()
+    {
+        OnJump.Invoke();
     }
 }
