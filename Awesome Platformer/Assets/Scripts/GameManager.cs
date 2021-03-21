@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<GameObject> levelGameObjectList;
     [SerializeField] List<Sprite> levelBackgroundList;
     [SerializeField] SpriteRenderer background;
+    [SerializeField] List<GameObject> lights;
 
     LevelManager levelManager;
 
@@ -28,8 +29,12 @@ public class GameManager : MonoBehaviour
         foreach (GameObject level in levelGameObjectList)
             level.SetActive(false);
 
+        foreach (GameObject light in lights)
+            light.SetActive(false);
+
         levelGameObjectList[GlobalVariables.currentLevel].SetActive(true);
-        background.sprite = levelBackgroundList[GlobalVariables.currentLevel];
+        lights[GlobalVariables.currentLevel].SetActive(true);
+        // background.sprite = levelBackgroundList[GlobalVariables.currentLevel];
     }
 
     public void AddToTotalCoins(int amount)
