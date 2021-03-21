@@ -9,7 +9,8 @@ public class Player : MonoBehaviour
     public event Action OnPlayerGrabCoin;
     public event Action OnPlayerWin;
 
-    [SerializeField] float speed = 12f;
+    [SerializeField] float baseSpeed = 8f;
+    [SerializeField] float sprintSpeed = 12f;
     [SerializeField] float jumpSpeed = 25f;
     [SerializeField] bool canDoubleJump = true;
 
@@ -23,6 +24,8 @@ public class Player : MonoBehaviour
     [SerializeField] AudioClip loseSound;
 
     public int coinAmount { get; private set; }
+    
+    float currentSpeed;
 
     Collider2D movingPlatform;
 
@@ -45,37 +48,51 @@ public class Player : MonoBehaviour
     void OnEnable()
     {
         inputManager.OnJump += Jump;
+        inputManager.OnShiftPressed += Sprint;
+        inputManager.OnShiftReleased += StopSprinting;
     }
 
     void OnDisable()
     {
         inputManager.OnJump -= Jump;
+        inputManager.OnShiftPressed -= Sprint;
+        inputManager.OnShiftReleased -= StopSprinting;
+    }
+
+    void Start()
+    {
+        currentSpeed = baseSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Attach the player to a moving platform so they move with it
         if (transform.parent == null && IsOnTopOfMovingPlatform())
         {
             transform.SetParent(movingPlatform.transform);
             rb.interpolation = RigidbodyInterpolation2D.None;
-        }
+        } // Detaches it
         else if (transform.parent != null && !IsOnTopOfMovingPlatform())
         {
             transform.SetParent(null);
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         }
 
-        rb.velocity = new Vector2(inputManager.horizontal * speed, rb.velocity.y);
+        if (IsGrounded() && InputManager.instance.shiftPressed)
+            currentSpeed = sprintSpeed;
+
+        rb.velocity = new Vector2(inputManager.horizontal * currentSpeed, rb.velocity.y);
 
         animator.SetBool(TagManager.IsWalking, inputManager.horizontal != 0);
 
+        // Sets the direction the player was last facing
         if (inputManager.horizontal != 0)
             inputManager.lastMoveHorizontal = inputManager.horizontal;
 
-        animator.SetBool(TagManager.IsJumping, !IsGrounded());
-
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
+
+        animator.SetBool(TagManager.IsJumping, !IsGrounded());
 
         if (rb.velocity.y < -100)
             Die();
@@ -108,6 +125,17 @@ public class Player : MonoBehaviour
             Instantiate(winEffect, transform.position, Quaternion.identity);
             SoundManager.instance.PlaySound(starSound);
         }
+    }
+
+    private void Sprint()
+    {
+        if (IsGrounded())
+            currentSpeed = sprintSpeed;
+    }
+
+    private void StopSprinting()
+    {
+        currentSpeed = baseSpeed;
     }
 
     private void Jump()

@@ -3,6 +3,7 @@ public class TagManager
     #region Input Tags
 
     public static string Horizontal = "Horizontal";
+    public static string Sprint = "Sprint";
     public static string Jump = "Jump";
 
     #endregion
