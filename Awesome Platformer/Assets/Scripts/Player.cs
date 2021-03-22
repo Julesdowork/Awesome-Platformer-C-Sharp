@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] float baseSpeed = 8f;
     [SerializeField] float sprintSpeed = 12f;
     [SerializeField] float jumpSpeed = 25f;
+    [SerializeField] float jumpTime = 0.35f;
     [SerializeField] bool canDoubleJump = true;
 
     [SerializeField] LayerMask groundLayer;
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour
     public int coinAmount { get; private set; }
     
     float currentSpeed;
+    bool isJumping;
+    float jumpTimeCounter;
 
     Collider2D movingPlatform;
 
@@ -92,6 +95,8 @@ public class Player : MonoBehaviour
 
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
 
+        Jump();
+
         animator.SetBool(TagManager.IsJumping, !IsGrounded());
 
         if (rb.velocity.y < -100)
@@ -140,18 +145,26 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        if (IsGrounded())
+        if (IsGrounded() && Input.GetButtonDown(TagManager.Jump))
         {
-            canDoubleJump = true;
+            isJumping = true;
+            jumpTimeCounter = jumpTime;
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-            SoundManager.instance.PlaySound(jumpSound);
         }
-        else if (!IsGrounded() && canDoubleJump)
+
+        if (isJumping && Input.GetButton(TagManager.Jump))
         {
-            canDoubleJump = false;
-            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-            SoundManager.instance.PlaySound(jumpSound);
+            if (jumpTimeCounter > 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+                isJumping = false;
         }
+
+        if (Input.GetButtonUp(TagManager.Jump))
+            isJumping = false;
     }
 
     private bool IsGrounded()
