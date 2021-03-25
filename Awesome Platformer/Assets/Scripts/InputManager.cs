@@ -41,8 +41,8 @@ public class InputManager : MonoBehaviour
             OnShiftReleased.Invoke();
         }
 
-        // if (Input.GetButtonDown(TagManager.Jump) && useKeyboardInput)
-        //     OnJump.Invoke();
+        if (Input.GetButtonDown(TagManager.Jump) && useKeyboardInput)
+            OnJump.Invoke();
     }
 
     public void SetHorizontalMovement(float amount)

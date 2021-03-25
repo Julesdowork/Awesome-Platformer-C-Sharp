@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     [SerializeField] float sprintSpeed = 12f;
     [SerializeField] float jumpSpeed = 25f;
     [SerializeField] float jumpTime = 0.35f;
-    [SerializeField] bool canDoubleJump = true;
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask movingPlatformLayer;
@@ -27,8 +26,8 @@ public class Player : MonoBehaviour
     public int coinAmount { get; private set; }
     
     float currentSpeed;
-    bool isJumping;
-    float jumpTimeCounter;
+    [SerializeField] float fallMultiplier = 2.5f;
+    [SerializeField] float lowJumpMultiplier = 2f;
 
     Collider2D movingPlatform;
 
@@ -82,23 +81,24 @@ public class Player : MonoBehaviour
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         }
 
+        // Player is sprinting
         if (IsGrounded() && InputManager.instance.shiftPressed)
             currentSpeed = sprintSpeed;
-
         rb.velocity = new Vector2(inputManager.horizontal * currentSpeed, rb.velocity.y);
-
-        animator.SetBool(TagManager.IsWalking, inputManager.horizontal != 0);
 
         // Sets the direction the player was last facing
         if (inputManager.horizontal != 0)
             inputManager.lastMoveHorizontal = inputManager.horizontal;
 
+        // Animate character
         spriteRenderer.flipX = inputManager.lastMoveHorizontal < 0;
-
-        Jump();
-
+        animator.SetBool(TagManager.IsWalking, inputManager.horizontal != 0);
         animator.SetBool(TagManager.IsJumping, !IsGrounded());
 
+        // Land on the ground
+        FallDown();
+
+        // Kill the player if they fall to their death
         if (rb.velocity.y < -100)
             Die();
     }
@@ -146,25 +146,15 @@ public class Player : MonoBehaviour
     private void Jump()
     {
         if (IsGrounded() && Input.GetButtonDown(TagManager.Jump))
-        {
-            isJumping = true;
-            jumpTimeCounter = jumpTime;
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-        }
+    }
 
-        if (isJumping && Input.GetButton(TagManager.Jump))
-        {
-            if (jumpTimeCounter > 0)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-                isJumping = false;
-        }
-
-        if (Input.GetButtonUp(TagManager.Jump))
-            isJumping = false;
+    private void FallDown()
+    {
+        if (rb.velocity.y < 0)
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        else if (rb.velocity.y > 0 && !Input.GetButton(TagManager.Jump))
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
     }
 
     private bool IsGrounded()
